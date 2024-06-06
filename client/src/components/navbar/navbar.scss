@@ -1,4 +1,4 @@
-@import "../responsive.scss";
+@import "../../responsive.scss";
 nav {
   height: 100px;
   display: flex;
@@ -29,7 +29,7 @@ nav {
       gap: 10px;
 
       img {
-        width: 28px;
+        width: 64px;
       }
 
       span {
@@ -88,15 +88,16 @@ nav {
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      font-size: 18px;
       &.active {
         right: 0;
       }
       @include sm {
         a {
           display: initial;
-
         }
       }
+
     }
   }
 }
