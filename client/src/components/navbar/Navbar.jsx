@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import "./navbar.scss";
 import { useSelector } from "react-redux";
 
-
 export const Navbar = () => {
   const [open, setOpen] = useState(false);
   const user = useSelector((state) => state.user.value);
@@ -24,11 +23,8 @@ export const Navbar = () => {
         {user ? (
           <>
             <div className="user">
-              <img
-                src="https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-                alt="user_img"
-              />
-              <span>John Doe</span>
+              <img src={user.avatar || "/noAvatar.jpeg"} alt="user_img" />
+              <span>{user.username}</span>
               <Link to="/profile" className="profile">
                 <div className="notification">3</div>
                 <span>Profile</span>
@@ -51,8 +47,12 @@ export const Navbar = () => {
           <Link to="/">About</Link>
           <Link to="/">Contact</Link>
           <Link to="/">Agents</Link>
-          <Link to="/">Sign In</Link>
-          <Link to="/">Sign Up</Link>
+          {!user && (
+            <>
+              <Link to="/">Sign In</Link>
+              <Link to="/">Sign Up</Link>
+            </>
+          )}
         </div>
       </div>
     </nav>
