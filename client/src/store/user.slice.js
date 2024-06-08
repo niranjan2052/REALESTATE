@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { fromStorage } from "../lib";
 
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    value: null,
+    value: fromStorage("user"),
   },
   reducers: {
     setUser: (state, action) => {
