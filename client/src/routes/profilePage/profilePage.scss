@@ -57,6 +57,15 @@
           border-radius: 50%;
           object-fit: cover;
         }
+
+        .logout{
+          width: max-content;
+          padding: 12px 24px;
+          background-color: teal;
+          color: #fff;
+          border: none;
+          cursor: pointer;
+        }
       }
     }
   }
