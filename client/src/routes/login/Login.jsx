@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import "./login.scss";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUser } from "../../store";
 import http from "../../http";
 import { inStorage } from "../../lib";
@@ -25,8 +25,8 @@ function Login() {
       http
         .post("auth/login", values)
         .then(({ data }) => {
-          inStorage("user", JSON.stringify(data), true);
           dispatch(setUser(data));
+          inStorage("user", JSON.stringify(data), true);
           navigate("/");
         })
         .catch(() => {})
