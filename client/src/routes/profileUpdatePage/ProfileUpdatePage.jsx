@@ -33,7 +33,7 @@ const ProfileUpdatePage = () => {
         newValue = { username, email, password, avatar };
       }
       http
-        .post(`/user/${user.id}`, newValue)
+        .patch(`/user/${user.id}`, newValue)
         .then(({ data }) => {
           inStorage("user", JSON.stringify(data), true);
           dispatch(setUser(data));
