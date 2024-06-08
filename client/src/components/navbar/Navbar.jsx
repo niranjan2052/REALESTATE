@@ -1,20 +1,24 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./navbar.scss";
+import { useSelector } from "react-redux";
+
+
 export const Navbar = () => {
   const [open, setOpen] = useState(false);
-  const user = true;
+  const user = useSelector((state) => state.user.value);
+
   return (
     <nav>
       <div className="left">
-        <a className="logo">
+        <Link to="/" className="logo">
           <img src="/logo.png" alt="" />
           <span>RealEstate</span>
-        </a>
-        <a href="/">Home</a>
-        <a href="/">About</a>
-        <a href="/">Contact</a>
-        <a href="/">Agents</a>
+        </Link>
+        <Link to="/">Home</Link>
+        <Link to="/about">About</Link>
+        <Link to="/contact">Contact</Link>
+        <Link to="/agents">Agents</Link>
       </div>
       <div className="right">
         {user ? (
@@ -33,22 +37,22 @@ export const Navbar = () => {
           </>
         ) : (
           <>
-            <a href="/">Sign In</a>
-            <a href="/" className="register">
+            <Link to="/login">Sign In</Link>
+            <Link to="/register" className="register">
               Sign Up
-            </a>
+            </Link>
           </>
         )}
         <div className="menuIcon">
           <img src="/menu.png" alt="menu_img" onClick={() => setOpen(!open)} />
         </div>
         <div className={open ? "menu active" : "menu"}>
-          <a href="/">Home</a>
-          <a href="/">About</a>
-          <a href="/">Contact</a>
-          <a href="/">Agents</a>
-          <a href="/">Sign In</a>
-          <a href="/">Sign Up</a>
+          <Link to="/">Home</Link>
+          <Link to="/">About</Link>
+          <Link to="/">Contact</Link>
+          <Link to="/">Agents</Link>
+          <Link to="/">Sign In</Link>
+          <Link to="/">Sign Up</Link>
         </div>
       </div>
     </nav>
