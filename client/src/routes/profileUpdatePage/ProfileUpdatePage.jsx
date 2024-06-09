@@ -11,7 +11,7 @@ import { useState } from "react";
 
 const ProfileUpdatePage = () => {
   const user = useSelector((state) => state.user.value);
-  const [avatar, setAvatar] = useState(user.avatar);
+  const [avatar, setAvatar] = useState([]);
   const dispatch = useDispatch();
   const formik = useFormik({
     initialValues: {
@@ -28,9 +28,9 @@ const ProfileUpdatePage = () => {
       const { username, email, password } = values;
       let newValue = null;
       if (password === "") {
-        newValue = { username, email, avatar };
+        newValue = { username, email, avatar: avatar[0] };
       } else {
-        newValue = { username, email, password, avatar };
+        newValue = { username, email, password, avatar: avatar[0] };
       }
       http
         .patch(`/user/${user.id}`, newValue)
@@ -86,7 +86,11 @@ const ProfileUpdatePage = () => {
         </form>
       </div>
       <div className="sideContainer">
-        <img src={avatar || "./noAvatar.jpeg"} alt="" className="avatar" />
+        <img
+          src={avatar[0] || user.avatar || "./noAvatar.jpeg"}
+          alt=""
+          className="avatar"
+        />
         <UploadWidget
           uwConfig={{
             cloudName: "dpdku6o5e",
@@ -95,7 +99,7 @@ const ProfileUpdatePage = () => {
             maxImageFileSize: 2000000,
             folder: "avatars",
           }}
-          setAvatar={setAvatar}
+          setState={setAvatar}
         />
       </div>
     </div>
