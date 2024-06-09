@@ -9,7 +9,7 @@ router.route("/").get(userController.index);
 router
   .route("/:id")
   .get(verifyToken, userController.show)
-  .post(verifyToken, userController.update)
+  .patch(verifyToken, userController.update)
   .put(verifyToken, userController.update)
   .delete(verifyToken, userController.destory);
 

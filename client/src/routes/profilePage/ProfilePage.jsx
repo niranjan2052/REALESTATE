@@ -7,7 +7,6 @@ import http from "../../http";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { clearUser } from "../../store";
-import { useEffect } from "react";
 
 const ProfilePage = () => {
   const user = useSelector((state) => state.user.value);
@@ -53,7 +52,9 @@ const ProfilePage = () => {
           </div>
           <div className="title">
             <h1>My List</h1>
-            <button>Create New Post</button>
+            <Link to="/newPostPage">
+              <button>Create New Post</button>
+            </Link>
           </div>
           <List />
           <div className="title">
