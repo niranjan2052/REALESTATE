@@ -4,7 +4,7 @@ import { fromStorage } from "../lib";
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    value: JSON.parse(fromStorage("user")),
+    value: JSON.parse(fromStorage("user")) || null,
   },
   reducers: {
     setUser: (state, action) => {
