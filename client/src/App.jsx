@@ -5,9 +5,10 @@ import ProfilePage from "./routes/profilePage/ProfilePage.jsx";
 import Register from "./routes/register/Register.jsx";
 import Login from "./routes/login/Login.jsx";
 import SinglePage from "./routes/singlePage/SinglePage.jsx";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, defer, RouterProvider } from "react-router-dom";
 import ProfileUpdatePage from "./routes/profileUpdatePage/ProfileUpdatePage.jsx";
 import NewPostPage from "./routes/newPostPage/NewPostPage.jsx";
+import http from "./http/index.js";
 function App() {
   const router = createBrowserRouter([
     {
@@ -25,6 +26,10 @@ function App() {
         {
           path: "/:id",
           element: <SinglePage />,
+          loader: async ({ request, params }) => {
+            const res = await http("/posts/" + params.id);
+            return res.data;
+          },
         },
         {
           path: "/login",
@@ -43,6 +48,14 @@ function App() {
         {
           path: "/profile",
           element: <ProfilePage />,
+          loader: async () => {
+            const postPromise = await http.get("/user/profilePosts");
+            const chatPromise = http.get("/chats");
+            return defer({
+              postResponse: postPromise,
+              chatResponse: chatPromise,
+            });
+          },
         },
         {
           path: "/updateProfile",
