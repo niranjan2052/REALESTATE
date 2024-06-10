@@ -1,10 +1,24 @@
 import prisma from "../lib/prisma.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 class postController {
   index = async (req, res) => {
+    const query = req.query;
+
     try {
-      const posts = await prisma.post.findMany();
+      const posts = await prisma.post.findMany({
+        where: {
+          city: { contains: query.city || undefined, mode: "insensitive" },
+          type: query.type || undefined,
+          property: query.property || undefined,
+          bedroom: parseInt(query.bedroom) || undefined,
+          price: {
+            gte: parseInt(query.minPrice) || 0,
+            lte: parseInt(query.maxPrice) || 10000000,
+          },
+        },
+      });
       res.status(200).json(posts);
     } catch (error) {
       console.log(error);
@@ -18,13 +32,37 @@ class postController {
         where: { id },
         include: {
           postDetail: true,
-          user: true,
+          user: {
+            select: {
+              username: true,
+              avatar: true,
+            },
+          },
         },
       });
-      res.status(200).json(post);
+
+      const token = req.cookies?.token;
+
+      if (token) {
+        jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, payload) => {
+          if (!err) {
+            const saved = await prisma.savedPost.findUnique({
+              where: {
+                userId_postId: {
+                  postId: id,
+                  userId: payload.id,
+                },
+              },
+            });
+            res.status(200).json({ ...post, isSaved: saved ? true : false });
+          }
+        });
+      } else {
+        res.status(200).json({ ...post, isSaved: false });
+      }
     } catch (error) {
       console.log(error);
-      res.status(500).json({ message: "Failed to Get User" });
+      res.status(500).json({ message: "Failed to Get Post" });
     }
   };
   store = async (req, res) => {
@@ -44,9 +82,6 @@ class postController {
     } catch (error) {}
   };
   update = async (req, res) => {
-    const id = req.params.id;
-    const tokenUserId = req.userId;
-
     try {
     } catch (error) {
       console.log(error);
