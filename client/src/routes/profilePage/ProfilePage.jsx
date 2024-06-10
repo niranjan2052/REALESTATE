@@ -5,11 +5,13 @@ import "./profilePage.scss";
 import { removeStorage } from "../../lib";
 import http from "../../http";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { Await, Link, useLoaderData, useNavigate } from "react-router-dom";
 import { clearUser } from "../../store";
+import { Suspense } from "react";
 
 const ProfilePage = () => {
   const user = useSelector((state) => state.user.value);
+  const data = useLoaderData();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -56,16 +58,40 @@ const ProfilePage = () => {
               <button>Create New Post</button>
             </Link>
           </div>
-          <List />
+          {/* //To show posts */}
+          <Suspense fallback={<p>Loading...</p>}>
+            <Await
+              resolve={data.postResponse}
+              errorElement={<p>Error loading posts!</p>}
+            >
+              {(postResponse) => <List posts={postResponse.data.userPosts} />}
+            </Await>
+          </Suspense>
           <div className="title">
             <h1>Saved List</h1>
           </div>
-          <List />
+          {/* to show saved posts */}
+          <Suspense fallback={<p>Loading...</p>}>
+            <Await
+              resolve={data.postResponse}
+              errorElement={<p>Error loading posts!</p>}
+            >
+              {(postResponse) => <List posts={postResponse.data.savedPosts} />}
+            </Await>
+          </Suspense>
         </div>
       </div>
       <div className="chatContainer">
         <div className="wrapper">
-          <Chat />
+          {/* to show chat */}
+          <Suspense fallback={<p>Loading...</p>}>
+            <Await
+              resolve={data.chatResponse}
+              errorElement={<p>Error loading chats!</p>}
+            >
+              {(chatResponse) => <Chat chats={chatResponse.data} />}
+            </Await>
+          </Suspense>
         </div>
       </div>
     </div>

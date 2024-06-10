@@ -4,7 +4,10 @@ import "leaflet/dist/leaflet.css";
 import Pin from "../pin/Pin";
 
 const Map = ({ items }) => {
-  const position = [51.505, -0.09];
+  const position =
+    items.length == 1
+      ? [items[0].latitude, items[0].longitude]
+      : [51.505, -0.09];
   return (
     <MapContainer
       center={position}

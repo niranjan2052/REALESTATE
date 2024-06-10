@@ -1,12 +1,31 @@
 import "./listPage.scss";
-import { listData } from "../../lib/dummydata.js";
 import Filter from "../../components/filter/Filter.jsx";
 import Card from "../../components/card/Card.jsx";
 import Map from "../../components/map/Map.jsx";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import http from "../../http/index.js";
 
 const ListPage = () => {
-  const data = listData;
-  return (
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const query = location.search;
+  useEffect(() => {
+    setLoading(true);
+    http
+      .get(`/posts/${query}`)
+      .then(({ data }) => {
+        setData(data);
+      })
+      .catch((err) => {console.log(err);})
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [query]);
+  return loading ? (
+    <p>Loading...</p>
+  ) : (
     <div className="listPage">
       <div className="listContainer">
         <div className="wrapper">
@@ -17,7 +36,7 @@ const ListPage = () => {
         </div>
       </div>
       <div className="mapContainer">
-        <Map items={data}/>
+        <Map items={data} />
       </div>
     </div>
   );
