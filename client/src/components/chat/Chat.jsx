@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import "./chat.scss";
 import { useSelector } from "react-redux";
 import http from "../../http";
@@ -6,11 +6,19 @@ import dayjs from "dayjs";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { SocketContext } from "../../context/SocketContext";
 dayjs.extend(relativeTime);
 
 const Chat = ({ chats }) => {
   const user = useSelector((state) => state.user.value);
   const [chatInfo, setChatInfo] = useState(null);
+  const { socket } = useContext(SocketContext);
+
+  const messageEndRef = useRef();
+
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [chatInfo]);
 
   const handleOpenChat = async (id, receiver) => {
     try {
@@ -35,6 +43,10 @@ const Chat = ({ chats }) => {
             ...prev,
             messages: [...prev.messages, data],
           }));
+          socket.emit("sendMessage", {
+            receiverId: chatInfo.receiver.id,
+            data,
+          });
         })
         .catch((err) => {
           console.log(err);
@@ -46,6 +58,30 @@ const Chat = ({ chats }) => {
     },
   });
 
+  useEffect(() => {
+    const read = async () => {
+      try {
+        await http.put("/chats/read/" + chatInfo.id);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (chatInfo && socket) {
+      socket.on("getMessage", (data) => {
+        if (chatInfo.id === data.chatId) {
+          setChatInfo((prev) => ({
+            ...prev,
+            messages: [...prev.messages, data],
+          }));
+          read();
+        }
+      });
+    }
+    return () => {
+      socket.off("getMessage");
+    };
+  }, [socket, chatInfo]);
+
   return (
     <div className="chat">
       <div className="messages">
@@ -56,9 +92,10 @@ const Chat = ({ chats }) => {
               className="message"
               key={chat.id}
               style={{
-                backgroundColor: chat.seenBy.includes(user.id)
-                  ? "white"
-                  : "#fecd514e",
+                backgroundColor:
+                  chat.seenBy.includes(user.id) || chatInfo?.id == chat.id
+                    ? "white"
+                    : "#fecd514e",
               }}
               onClick={() => handleOpenChat(chat.id, chat.receiver)}
             >
@@ -97,6 +134,7 @@ const Chat = ({ chats }) => {
                 </div>
               );
             })}
+            <div ref={messageEndRef}></div>
           </div>
           <form onSubmit={formik.handleSubmit} className="bottom">
             <textarea
