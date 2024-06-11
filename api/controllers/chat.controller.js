@@ -94,7 +94,7 @@ class chatController {
         },
         data: {
           seenBy: {
-            push: [tokenUserId],
+            set: [tokenUserId],
           },
         },
       });

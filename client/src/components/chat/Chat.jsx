@@ -3,6 +3,8 @@ import "./chat.scss";
 import { useSelector } from "react-redux";
 import http from "../../http";
 import dayjs from "dayjs";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
@@ -18,6 +20,31 @@ const Chat = ({ chats }) => {
       console.log(err);
     }
   };
+  const formik = useFormik({
+    initialValues: {
+      text: "",
+    },
+    validationSchema: Yup.object({
+      text: Yup.string(),
+    }),
+    onSubmit: async (values, { setSubmitting }) => {
+      await http
+        .post("/messages/" + chatInfo.id, values)
+        .then(({ data }) => {
+          setChatInfo((prev) => ({
+            ...prev,
+            messages: [...prev.messages, data],
+          }));
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setSubmitting(false);
+        });
+      formik.resetForm();
+    },
+  });
 
   return (
     <div className="chat">
@@ -56,17 +83,32 @@ const Chat = ({ chats }) => {
           <div className="center">
             {chatInfo.messages.map((message) => {
               return (
-                <div className="chatMessage own" key={message.id}>
+                <div
+                  className="chatMessage"
+                  style={{
+                    alignSelf:
+                      message.userId === user.id ? "flex-end" : "flex-start",
+                    textAlign: message.userId === user.id ? "right" : "left",
+                  }}
+                  key={message.id}
+                >
                   <p>{message.text}</p>
                   <span>{dayjs(message.createdAt).fromNow()}</span>
                 </div>
               );
             })}
           </div>
-          <div className="bottom">
-            <textarea></textarea>
-            <button>Send</button>
-          </div>
+          <form onSubmit={formik.handleSubmit} className="bottom">
+            <textarea
+              name="text"
+              id="text"
+              value={formik.values.text}
+              onChange={formik.handleChange}
+            ></textarea>
+            <button type="submit" disabled={formik.isSubmitting}>
+              Send
+            </button>
+          </form>
         </div>
       )}
     </div>
