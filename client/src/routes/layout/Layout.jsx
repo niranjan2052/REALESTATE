@@ -1,7 +1,6 @@
 import "./layout.scss";
 import Navbar from "../../components/navbar/Navbar.jsx";
-import { Navigate, Outlet, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 const Layout = () => {
   return (
