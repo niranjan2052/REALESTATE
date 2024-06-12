@@ -1,11 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./navbar.scss";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setNotification } from "../../store";
+import http from "../../http";
 
 export const Navbar = () => {
   const [open, setOpen] = useState(false);
   const user = useSelector((state) => state.user.value);
+  const notificationNumber = useSelector((state) => state.notification.value);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const notificationHandler = async () => {
+      await http
+        .get("user/notification")
+        .then(({ data }) => {
+          console.log(data);
+          dispatch(setNotification(data));
+        })
+        .catch(() => {})
+        .finally(() => {});
+    };
+    notificationHandler();
+  }, []);
 
   return (
     <nav>
@@ -26,7 +44,9 @@ export const Navbar = () => {
               <img src={user.avatar || "/noAvatar.jpeg"} alt="user_img" />
               <span>{user.username}</span>
               <Link to="/profile" className="profile">
-                <div className="notification">3</div>
+                {notificationNumber > 0 && (
+                  <div className="notification">{notificationNumber}</div>
+                )}
                 <span>Profile</span>
               </Link>
             </div>

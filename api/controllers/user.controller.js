@@ -105,7 +105,6 @@ class userController {
     }
   };
 
-
   profilePosts = async (req, res) => {
     const tokenUserId = req.userId;
     try {
@@ -125,6 +124,28 @@ class userController {
     } catch (err) {
       console.log(err);
       res.status(500).json({ message: "Failed to get profilePosts" });
+    }
+  };
+
+  notificationNumber = async (req, res) => {
+    const tokenUserId = req.userId;
+    try {
+      const number = await prisma.chat.count({
+        where: {
+          userIDs: {
+            hasSome: [tokenUserId],
+          },
+          NOT: {
+            seenBy: {
+              hasSome: [tokenUserId],
+            },
+          },
+        },
+      });
+      res.status(200).json(number);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ message: "Failed to get notification number" });
     }
   };
 }

@@ -63,7 +63,6 @@ const NewPostPage = () => {
           restaurant: parseInt(values.restaurant),
         },
       };
-      console.log(newValues);
       http
         .post("/posts", newValues)
         .then(({ data }) => {

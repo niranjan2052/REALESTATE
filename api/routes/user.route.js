@@ -15,5 +15,6 @@ router
 
 router.post("/save", verifyToken, userController.savePost);
 router.get("/profilePosts", verifyToken, userController.profilePosts);
+router.get("/notification", verifyToken, userController.notificationNumber);
 
 export default router;
