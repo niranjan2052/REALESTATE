@@ -15,7 +15,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(urlencoded());
 app.get("/",(_req,res)=>{
-  res.send("RealEstate Sever!!");
+  res.send("RealEstate Server!!");
 })
 app.use("/api/posts", postRoutes);
 app.use("/api/auth", authRoutes);
