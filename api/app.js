@@ -14,7 +14,9 @@ app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(urlencoded());
-
+app.use("/",(req,res)=>{
+  res.send("RealEstate Sever!!");
+})
 app.use("/api/posts", postRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);

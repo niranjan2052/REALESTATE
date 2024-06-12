@@ -11,19 +11,6 @@ export const Navbar = () => {
   const notificationNumber = useSelector((state) => state.notification.value);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const notificationHandler = async () => {
-      await http
-        .get("user/notification")
-        .then(({ data }) => {
-          console.log(data);
-          dispatch(setNotification(data));
-        })
-        .catch(() => {})
-        .finally(() => {});
-    };
-    notificationHandler();
-  }, []);
 
   return (
     <nav>

@@ -17,6 +17,20 @@ const Chat = ({ chats }) => {
   const messageEndRef = useRef();
 
   useEffect(() => {
+    const notificationHandler = async () => {
+      await http
+        .get("user/notification")
+        .then(({ data }) => {
+          console.log(data);
+          dispatch(setNotification(data));
+        })
+        .catch(() => {})
+        .finally(() => {});
+    };
+    notificationHandler();
+  }, [chatInfo]);
+
+  useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatInfo]);
 
