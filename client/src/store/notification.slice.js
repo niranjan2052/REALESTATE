@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import http from "../http";
 
 const notificationSlice = createSlice({
   name: "notification",
