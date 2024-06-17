@@ -9,6 +9,9 @@ import { createBrowserRouter, defer, RouterProvider } from "react-router-dom";
 import ProfileUpdatePage from "./routes/profileUpdatePage/ProfileUpdatePage.jsx";
 import NewPostPage from "./routes/newPostPage/NewPostPage.jsx";
 import http from "./http/index.js";
+import Contact from "./routes/contact/Contact.jsx";
+import About from "./routes/about/About.jsx";
+import Agents from "./routes/agents/Agents.jsx";
 function App() {
   const router = createBrowserRouter([
     {
@@ -38,6 +41,18 @@ function App() {
         {
           path: "/register",
           element: <Register />,
+        },
+        {
+          path: "/about",
+          element: <About />,
+        },
+        {
+          path: "/contact",
+          element: <Contact />,
+        },
+        {
+          path: "/agents",
+          element: <Agents />,
         },
       ],
     },
